@@ -1,12 +1,24 @@
 import {Container, Row, Col, Card, Button} from 'react-bootstrap'
 import {useState, useEffect} from 'react'
+import {Link} from 'react-router-dom'
+import {connect} from 'react-redux'
+import { addFavoritesAction } from '../redux/actions'
+
+const mapStateToProps = (state) => ({
+
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    addFavorites: (company) => {
+        dispatch(addFavoritesAction(company))
+    },
+})
 
 
-
-
-const Search = () => {
+const Search = (props) => {
     const [jobs, setJobs] = useState([])
     const [input, setInput] = useState("")
+    const [selected, setSelected] = useState(false)
 
 
     useEffect ( () => {
@@ -37,6 +49,7 @@ const Search = () => {
 
     return(
         <Container>
+            <Link to='/favorites'></Link>
 
             <h2> Search for your dream Job</h2>
             <form onSubmit={handleSubmit}>
@@ -47,11 +60,11 @@ const Search = () => {
             {jobs.map((job) => (
                 <Col>
                 <Card className="cards">
-                    <Card.Header>{job.category}</Card.Header>
+                    <Card.Header>{job.category} <Button active onClick={(e) => {props.addFavorites(job.company_name)}}>Add to favorites</Button>   </Card.Header>
                     <Card.Body>
                         <Card.Title>{job.title}</Card.Title>
+                        <Link to={`/${job.company_name}`}>{job.company_name}</Link>
                         
-                        <Button variant="primary">Go somewhere</Button>
                     </Card.Body>
                 </Card>
                 </Col>
@@ -67,4 +80,4 @@ const Search = () => {
 
 
 
-export default Search
+export default connect(mapStateToProps, mapDispatchToProps)(Search)
